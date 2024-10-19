@@ -14,6 +14,7 @@ const List<String> questions = [
   'Оцініть рівень забезпеченості дисципліни навчально-методичними матеріалами та інформаційними ресурсами',
   'Оцініть ступінь володіння викладача технологіями дистанційного навчання',
 ];
+final List<int> selectedValues = List.filled(questions.length, 4);
 
 class TeacherEstimationApp extends StatefulWidget {
   const TeacherEstimationApp({Key? key}) : super(key: key);
@@ -126,11 +127,16 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
-  final GlobalKey<TeacherEstimationAppState> _appScreenWidgetKey = GlobalKey<TeacherEstimationAppState>();
-  late List<int> selectedValues;
+  // final GlobalKey<TeacherEstimationAppState> _appScreenWidgetKey = GlobalKey<TeacherEstimationAppState>();
 
   void _moveToNextQuestion() {
     Navigator.of(context).pushNamed('/question${(widget.n + 1)}');
+  }
+
+  void _printState() {
+    for (var i = 0; i < selectedValues.length; i++) {
+      print('Для питання ${i+1} вибір ${selectedValues[i]}');
+    }
   }
 
   // @override
@@ -145,7 +151,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int a = 9;
     return AppScreen(
       bodyElement: Padding(
           padding: const EdgeInsets.all(10),
@@ -154,7 +159,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Питання ${widget.n} ${a}',
+                'Питання ${widget.n}',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
@@ -180,10 +185,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   ),
                   leading: Radio<int>(
                     value: 4 - i,
-                    groupValue: _appScreenWidgetKey.currentState!.selectedValues[widget.n - 1],
+                    groupValue: selectedValues[widget.n - 1],
                     onChanged: (int? value) {
                       setState(() {
-                        _appScreenWidgetKey.currentState!.setSelectedValue(widget.n - 1, value);
+                        selectedValues[widget.n - 1] = value!;
                       });
                     },
                   ),
@@ -194,8 +199,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   foregroundColor: WidgetStateProperty.resolveWith((value) { return Colors.white;}),
                   backgroundColor: WidgetStateProperty.resolveWith((value) { return Colors.blue;}),
                 ),
-                onPressed: _moveToNextQuestion,
-                child: const Text('До наступного питання', style: TextStyle(fontSize: 22)),
+                onPressed: widget.n < selectedValues.length ? _moveToNextQuestion : _printState,
+                child: Text(
+                  widget.n < selectedValues.length ? 'До наступного питання' : 'Показати результати',
+                  style: TextStyle(fontSize: 22),
+                ),
               ),
             ],
           ),
