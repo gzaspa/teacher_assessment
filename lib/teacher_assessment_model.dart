@@ -1,12 +1,27 @@
 import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
-
-import 'main.dart';
+import 'package:teacher_estimation/main.dart';
 
 class TeacherAssessmentModel extends ChangeNotifier {
-  List<int> _selectedValues = List.filled(questions.length, 4);
+  TeacherAssessmentModel(this._selectedValues);
 
-  void setSelectedValue(int index, int value) {
-    _selectedValues[index] = value;
+  final List<AssessmentValueModel> _selectedValues;
+
+  List<AssessmentValueModel> get selectedValues => _selectedValues;
+
+  void setSelectedValue(int index, AssessmentValueModel? value) {
+    _selectedValues[index] = value!;
+    notifyListeners();
   }
+}
+
+class AssessmentValueModel {
+  AssessmentValueModel(this._number, this._description);
+
+  int _number;
+  String _description;
+
+  int get number => _number;
+  String get description => _description;
+  set number(int val) => _number = val;
+  set description(String val) => _description = val;
 }
