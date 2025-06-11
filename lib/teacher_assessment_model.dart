@@ -1,12 +1,21 @@
 import 'package:flutter/foundation.dart';
-import 'package:teacher_estimation/main.dart';
+import 'package:teacher_estimation/question_model.dart';
 
 class TeacherAssessmentModel extends ChangeNotifier {
-  TeacherAssessmentModel(this._selectedValues);
+  TeacherAssessmentModel(List<QuestionModel> questions) {
+    setSelectedValues(questions);
+  }
 
-  final List<AssessmentValueModel> _selectedValues;
-
+  final List<AssessmentValueModel> _selectedValues = [];
   List<AssessmentValueModel> get selectedValues => _selectedValues;
+
+  void setSelectedValues(List<QuestionModel> questions) {
+    for (var i = 0; i < questions.length; i++) {
+      int n = questions[i].choices.length - 1;
+      _selectedValues.add(AssessmentValueModel(n, questions[i].choices[n]));
+    }
+    notifyListeners();
+  }
 
   void setSelectedValue(int index, AssessmentValueModel? value) {
     _selectedValues[index] = value!;
@@ -15,13 +24,8 @@ class TeacherAssessmentModel extends ChangeNotifier {
 }
 
 class AssessmentValueModel {
-  AssessmentValueModel(this._number, this._description);
+  AssessmentValueModel(this.number, this.description);
 
-  int _number;
-  String _description;
-
-  int get number => _number;
-  String get description => _description;
-  set number(int val) => _number = val;
-  set description(String val) => _description = val;
+  int number;
+  String description;
 }

@@ -15,29 +15,22 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        context.read<TeacherAssessmentModel>().selectedValues[widget.n - 1] = AssessmentValueModel(widget.items.length - 1, widget.items[0]);
-      });
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     setState(() {
+  //       context.read<TeacherAssessmentModel>().selectedValues[widget.n - 1] = AssessmentValueModel(widget.items.length - 1, widget.items[0]);
+  //     });
+  //   });
+  // }
 
   void _moveToNextQuestion() {
-    Navigator.of(context).pushNamed('/question${(widget.n + 1)}');
+    Navigator.of(context).pushNamed('/question${(widget.n)}');
   }
 
   void _confirmResult() {
     Navigator.of(context).pushNamed('/confirmation');
-  }
-
-  void _printState() {
-    List<AssessmentValueModel> selectedValues = Provider.of<TeacherAssessmentModel>(context, listen: false).selectedValues;
-    for (var i = 0; i < selectedValues.length; i++) {
-      print('Для питання ${i+1} вибір ${selectedValues[i]}');
-    }
   }
 
   @override
@@ -102,7 +95,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     child: Text(
                       widget.n < assessment.selectedValues.length
                           ? 'До наступного питання'
-                          : 'Зберегти результат',
+                          : 'Завершити оцінювання',
                       style: TextStyle(fontSize: 22),
                     ),
                   ),
@@ -115,6 +108,20 @@ class _QuestionScreenState extends State<QuestionScreen> {
 }
 
 class ConfirmScreen extends StatelessWidget {
+  // _getColor(int grade) {
+  //   switch(grade) {
+  //     case 0: return Colors.red;
+  //     case 1: return Colors.yellow;
+  //     case 2: return Colors.orange;
+  //     case 3: return Colors.green.shade400;
+  //     case 4: return Colors.green.shade800;
+  //     default: return Colors.black;
+  //   }
+  // }
+  void onSaveResult() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TeacherAssessmentModel>(
@@ -123,22 +130,64 @@ class ConfirmScreen extends StatelessWidget {
             bodyElement: Padding(
               padding: const EdgeInsets.all(10),
               child:
-              ListView(
-                padding: const EdgeInsets.all(8),
-                children: <Widget>[
-                  for (var i = 0; i < assessment.selectedValues.length; i++)
-                    Container(
-                      child: Text(
-                        questions[i] + assessment.selectedValues[i].description,
-                        textAlign:  TextAlign.left,
-                        style: const TextStyle(
+                  Column(
+                    children: [
+                      const Text(
+                        'Збережіть результат оцінювання',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
                           fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                ],
-              ),
-
+                      TextButton(
+                        style: ButtonStyle(
+                          foregroundColor: WidgetStateProperty.resolveWith((value) {
+                            return Colors.white;
+                          }),
+                          backgroundColor: WidgetStateProperty.resolveWith((value) {
+                            return Colors.blue;
+                          }),
+                        ),
+                        onPressed: onSaveResult,
+                        child: const Text(
+                          'Зберегти результат',
+                          style: TextStyle(fontSize: 22),
+                        ),
+                      ),
+                    ],
+                  )
+              // ListView(
+              //     padding: const EdgeInsets.all(8),
+              //     children: <Widget>[
+              //
+              //       for (var i = 0; i < assessment.selectedValues.length; i++)
+              //         Container(
+              //           padding: const EdgeInsets.all(16),
+              //           decoration: const BoxDecoration(border: Border(top: BorderSide(color: Colors.grey, width: 2))),
+              //           child: Column(
+              //             children: [
+              //               Text(
+              //                 questions[i],
+              //                 textAlign: TextAlign.left,
+              //                 style: const TextStyle(
+              //                   fontSize: 22,
+              //                 ),
+              //               ),
+              //               Text(
+              //                 assessment.selectedValues[i].description,
+              //                 textAlign: TextAlign.left,
+              //                 style: TextStyle(
+              //                   fontSize: 22,
+              //                   color: _getColor(assessment.selectedValues[i].number),
+              //                   fontWeight: FontWeight.bold,
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //     ],
+              //   ),
             ),
           );
         }
